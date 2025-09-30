@@ -1,0 +1,91 @@
+{{/* Conditional responsive <picture> for tall images only.
+
+   Triggers when (image height / image width) >= tallratio (default 1.6).
+   Falls back to a plain <img> otherwise, or when the image isn't a Hugo Resource.
+
+   Optional per-image attributes in Markdown:
+   - tallratio:  aspect ratio threshold, H/W (default: 1.6)
+   - innerw:     desktop max width  (default: 1100)
+   - innerh:     desktop max height (default: 770)
+   - mobilemaxw: cap mobile width   (default: 900)
+   - breakpoint: px where desktop source is used (default: 900)
+   - force:      "true" to force picture mode; "false" to disable (default empty)
+   - class:      optional class on <picture> / <img>
+
+   Examples:
+   ![UI](screen.png){tallratio="1.7"}
+   ![UI](screen.png){force="true"}
+*/}}
+
+{{ $alt        := .Text | default "" }}
+{{ $attrs      := .Attributes }}
+{{ $tallRatio  := (index $attrs "tallratio"  | default "1.6") | float }}
+{{ $innerW     := (index $attrs "innerw"     | default "1100") | int }}
+{{ $innerH     := (index $attrs "innerh"     | default "770")  | int }}
+{{ $mobileMaxW := (index $attrs "mobilemaxw" | default "900")  | int }}
+{{ $breakpoint := (index $attrs "breakpoint" | default "900")  | int }}
+{{ $force      := (index $attrs "force"      | default "") | lower }}
+{{ $class      := (index $attrs "class"      | default "") }}
+
+{{ $src := .Destination }}
+{{ $img := .Page.Resources.GetMatch $src }}
+{{ if not $img }}{{ $img = resources.Get $src }}{{ end }}
+
+{{ if $img }}
+  {{/* Decide if it's "too tall" */}}
+  {{ $ratio  := div (float $img.Height) (float $img.Width) }}
+  {{ $isTall := ge $ratio $tallRatio }}
+  {{ $doPic  := or (eq $force "true") (and (ne $force "false") $isTall) }}
+
+  {{ if $doPic }}
+    {{/* --- Picture mode: near-original on mobile, fitted on desktop --- */}}
+    {{ $origW := $img.Width }}
+
+    {{/* Mobile (near original, no upscaling) */}}
+    {{ $mob1w := cond (lt $origW $mobileMaxW) $origW $mobileMaxW }}
+    {{ $mob2cand := mul $mob1w 2 }}
+    {{ $mob2w := cond (lt $mob2cand $origW) $mob2cand $origW }}
+    {{ $mobile1x := $img.Resize (printf "%dx q90" $mob1w) }}
+    {{ $mobile2x := $img.Resize (printf "%dx q85" $mob2w) }}
+
+    {{/* Desktop (fit into innerW × innerH) */}}
+    {{ $desk1x := $img.Fit (printf "%dx%d q90" $innerW $innerH) }}
+    {{ $desk2x := $img.Fit (printf "%dx%d q85" (mul $innerW 2) (mul $innerH 2)) }}
+
+    {{ $bpMinus := sub $breakpoint 1 }}
+
+    <picture{{ with $class }} class="{{ . }}"{{ end }}>
+      <source media="(max-width: {{ $bpMinus }}px)"
+              srcset="{{ $mobile1x.RelPermalink }} 1x, {{ $mobile2x.RelPermalink }} 2x">
+      <source media="(min-width: {{ $breakpoint }}px)"
+              srcset="{{ $desk1x.RelPermalink }} 1x, {{ $desk2x.RelPermalink }} 2x">
+      <img
+        src="{{ $mobile1x.RelPermalink }}"
+        srcset="{{ $mobile1x.RelPermalink }} 1x, {{ $mobile2x.RelPermalink }} 2x"
+        alt="{{ $alt }}"
+        loading="lazy"
+        decoding="async"
+        style="max-width:100%;height:auto">
+    </picture>
+  {{ else }}
+    {{/* Not tall (or forced off): plain responsive <img> */}}
+    <img
+      src="{{ $img.RelPermalink }}"
+      alt="{{ $alt }}"
+      loading="lazy"
+      decoding="async"
+      {{ with $class }}class="{{ . }}"{{ end }}
+      style="max-width:100%;height:auto">
+  {{ end }}
+{{ else }}
+  {{/* Fallback for non-Resource/remote images: render as-is */}}
+  <img
+    src="{{ $src }}"
+    alt="{{ $alt }}"
+    loading="lazy"
+    decoding="async"
+    {{ with $class }}class="{{ . }}"{{ end }}
+    style="max-width:100%;height:auto">
+{{ end }}
+
+
