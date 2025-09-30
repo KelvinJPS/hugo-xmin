@@ -47,16 +47,26 @@
     {{ $mob2w := cond (lt $mob2cand $origW) $mob2cand $origW }}
     {{ $mobile1x := $img.Resize (printf "%dx q90" $mob1w) }}
     {{ $mobile2x := $img.Resize (printf "%dx q85" $mob2w) }}
+    {{ $mobile1xWebp := $img.Resize (printf "%dx webp q90" $mob1w) }}
+    {{ $mobile2xWebp := $img.Resize (printf "%dx webp q85" $mob2w) }}
 
     {{/* Desktop (fit into innerW × innerH) */}}
     {{ $desk1x := $img.Fit (printf "%dx%d q90" $innerW $innerH) }}
     {{ $desk2x := $img.Fit (printf "%dx%d q85" (mul $innerW 2) (mul $innerH 2)) }}
+    {{ $desk1xWebp := $img.Fit (printf "%dx%d webp q90" $innerW $innerH) }}
+    {{ $desk2xWebp := $img.Fit (printf "%dx%d webp q85" (mul $innerW 2) (mul $innerH 2)) }}
 
     {{ $bpMinus := sub $breakpoint 1 }}
 
     <picture{{ with $class }} class="{{ . }}"{{ end }}>
       <source media="(max-width: {{ $bpMinus }}px)"
+              srcset="{{ $mobile1xWebp.RelPermalink }} 1x, {{ $mobile2xWebp.RelPermalink }} 2x"
+              type="image/webp">
+      <source media="(max-width: {{ $bpMinus }}px)"
               srcset="{{ $mobile1x.RelPermalink }} 1x, {{ $mobile2x.RelPermalink }} 2x">
+      <source media="(min-width: {{ $breakpoint }}px)"
+              srcset="{{ $desk1xWebp.RelPermalink }} 1x, {{ $desk2xWebp.RelPermalink }} 2x"
+              type="image/webp">
       <source media="(min-width: {{ $breakpoint }}px)"
               srcset="{{ $desk1x.RelPermalink }} 1x, {{ $desk2x.RelPermalink }} 2x">
       <img
@@ -68,14 +78,17 @@
         style="max-width:100%;height:auto">
     </picture>
   {{ else }}
-    {{/* Not tall (or forced off): plain responsive <img> */}}
-    <img
-      src="{{ $img.RelPermalink }}"
-      alt="{{ $alt }}"
-      loading="lazy"
-      decoding="async"
-      {{ with $class }}class="{{ . }}"{{ end }}
-      style="max-width:100%;height:auto">
+    {{/* Not tall (or forced off): responsive <picture> with WebP */}}
+    {{ $standardWebp := $img.Resize (printf "%dx webp q90" $img.Width) }}
+    <picture{{ with $class }} class="{{ . }}"{{ end }}>
+      <source srcset="{{ $standardWebp.RelPermalink }}" type="image/webp">
+      <img
+        src="{{ $img.RelPermalink }}"
+        alt="{{ $alt }}"
+        loading="lazy"
+        decoding="async"
+        style="max-width:100%;height:auto">
+    </picture>
   {{ end }}
 {{ else }}
   {{/* Fallback for non-Resource/remote images: render as-is */}}
