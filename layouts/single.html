@@ -1,15 +1,15 @@
 {{ partial "header.html" . }}
 <div class="article-meta">
-<h1><span class="title">{{ .Title | markdownify }}</span></h1>
-{{ with .Params.author }}<h2 class="author">{{ . }}</h2>{{ end }}
-  {{ if (gt .Params.date 0) }}<strong>{{ .Date.Format "Jan 2 2006" }}</strong/>{{ end }}
-<p class="terms">
-  {{ range $i := (slice "categories" "tags") }}
-  {{ with ($.Param $i) }}
-  {{ $i | title }}: {{ range $k := . }}<a href="{{ relURL (print "/" $i "/" $k | urlize) }}">{{$k}}</a> {{ end }}
-  {{ end }}
-  {{ end }}
-</p>
+  <h1><span class="title">{{ .Title | markdownify }}</span></h1>
+  {{ with .Params.author }}<h2 class="author">{{ . }}</h2>{{ end }}
+  {{ if (gt .Params.date 0) }}<strong>{{ .Date.Format "Jan 2 2006" }}</strong />{{ end }}
+  <p class="terms">
+    {{ range $i := (slice "categories" "tags") }}
+    {{ with ($.Param $i) }}
+    {{ $i | title }}: {{ range $k := . }}<a href="{{ relURL (print "/" $i "/" $k | urlize) }}">{{$k}}</a> {{ end }}
+    {{ end }}
+    {{ end }}
+  </p>
 </div>
 
 {{ if .Params.toc }}
@@ -22,7 +22,11 @@
 {{ end }}
 
 <main>
-{{ .Content }}
+  {{ .Content }}
 </main>
 
-{{ partial "footer.html" . }}
+{{ if eq .Section "blog" }}
+<hr>
+</hr>
+<p> if you liked this post <a href="/subscribe">subscribe</a> to get updates when new posts are availabe</p>
+{{ end }}
