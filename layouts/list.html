@@ -6,13 +6,15 @@
 
 {{ .Content }}
 
-<ul style="list-style-type: none">
+<ul style="list-style-type: none; padding: 0">
   {{ $pages := .Pages }}
   {{ if .IsHome }}{{ $pages = .Site.RegularPages }}{{ end }}
   {{ range (where $pages "Section" "!=" "") }}
+    {{ if and (not .Draft) .Title }}
   <li>
     <a href="{{ .RelPermalink }}">{{ .Title | markdownify }}</a>
   </li>
+    {{ end }}
   {{ end }}
 </ul>
 
