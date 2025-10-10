@@ -13,7 +13,12 @@
 </div>
 
 {{ if .Params.toc }}
-{{ .TableOfContents }}
+<details class="toc-container" open>
+  <summary class="toc-header">Table of Contents</summary>
+  <div class="toc-content">
+    {{ .TableOfContents }}
+  </div>
+</details>
 {{ end }}
 
 <main>
