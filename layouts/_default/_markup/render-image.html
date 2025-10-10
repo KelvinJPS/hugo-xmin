@@ -45,12 +45,12 @@
     {{ $mob1w := cond (lt $origW $mobileMaxW) $origW $mobileMaxW }}
     {{ $mob2cand := mul $mob1w 2 }}
     {{ $mob2w := cond (lt $mob2cand $origW) $mob2cand $origW }}
-    {{ $mobile1x := $img.Resize (printf "%dx q90" $mob1w) }}
-    {{ $mobile2x := $img.Resize (printf "%dx q85" $mob2w) }}
+    {{ $mobile1x := $img.Resize (printf "%dx webp q90" $mob1w) }}
+    {{ $mobile2x := $img.Resize (printf "%dx webp q85" $mob2w) }}
 
     {{/* Desktop (fit into innerW × innerH) */}}
-    {{ $desk1x := $img.Fit (printf "%dx%d q90" $innerW $innerH) }}
-    {{ $desk2x := $img.Fit (printf "%dx%d q85" (mul $innerW 2) (mul $innerH 2)) }}
+    {{ $desk1x := $img.Fit (printf "%dx%d webp q90" $innerW $innerH) }}
+    {{ $desk2x := $img.Fit (printf "%dx%d webp q85" (mul $innerW 2) (mul $innerH 2)) }}
 
     {{ $bpMinus := sub $breakpoint 1 }}
 
@@ -70,10 +70,11 @@
       </picture>
     </a>
   {{ else }}
-    {{/* Not tall (or forced off): plain responsive <img> */}}
+    {{/* Not tall (or forced off): plain responsive <img> with WebP conversion */}}
+    {{ $webp := $img.Resize (printf "%dx webp q90" $img.Width) }}
     <a href="{{ $img.RelPermalink }}">
       <img
-        src="{{ $img.RelPermalink }}"
+        src="{{ $webp.RelPermalink }}"
         alt="{{ $alt }}"
         loading="lazy"
         decoding="async"
