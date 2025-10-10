@@ -54,38 +54,44 @@
 
     {{ $bpMinus := sub $breakpoint 1 }}
 
-    <picture{{ with $class }} class="{{ . }}"{{ end }}>
-      <source media="(max-width: {{ $bpMinus }}px)"
-              srcset="{{ $mobile1x.RelPermalink }} 1x, {{ $mobile2x.RelPermalink }} 2x">
-      <source media="(min-width: {{ $breakpoint }}px)"
-              srcset="{{ $desk1x.RelPermalink }} 1x, {{ $desk2x.RelPermalink }} 2x">
+    <a href="{{ $img.RelPermalink }}">
+      <picture{{ with $class }} class="{{ . }}"{{ end }}>
+        <source media="(max-width: {{ $bpMinus }}px)"
+                srcset="{{ $mobile1x.RelPermalink }} 1x, {{ $mobile2x.RelPermalink }} 2x">
+        <source media="(min-width: {{ $breakpoint }}px)"
+                srcset="{{ $desk1x.RelPermalink }} 1x, {{ $desk2x.RelPermalink }} 2x">
+        <img
+          src="{{ $mobile1x.RelPermalink }}"
+          srcset="{{ $mobile1x.RelPermalink }} 1x, {{ $mobile2x.RelPermalink }} 2x"
+          alt="{{ $alt }}"
+          loading="lazy"
+          decoding="async"
+          >
+      </picture>
+    </a>
+  {{ else }}
+    {{/* Not tall (or forced off): plain responsive <img> */}}
+    <a href="{{ $img.RelPermalink }}">
       <img
-        src="{{ $mobile1x.RelPermalink }}"
-        srcset="{{ $mobile1x.RelPermalink }} 1x, {{ $mobile2x.RelPermalink }} 2x"
+        src="{{ $img.RelPermalink }}"
         alt="{{ $alt }}"
         loading="lazy"
         decoding="async"
+        {{ with $class }}class="{{ . }}"{{ end }}
         >
-    </picture>
-  {{ else }}
-    {{/* Not tall (or forced off): plain responsive <img> */}}
+    </a>
+  {{ end }}
+{{ else }}
+  {{/* Fallback for non-Resource/remote images: render as-is */}}
+  <a href="{{ $src }}">
     <img
-      src="{{ $img.RelPermalink }}"
+      src="{{ $src }}"
       alt="{{ $alt }}"
       loading="lazy"
       decoding="async"
       {{ with $class }}class="{{ . }}"{{ end }}
       >
-  {{ end }}
-{{ else }}
-  {{/* Fallback for non-Resource/remote images: render as-is */}}
-  <img
-    src="{{ $src }}"
-    alt="{{ $alt }}"
-    loading="lazy"
-    decoding="async"
-    {{ with $class }}class="{{ . }}"{{ end }}
-    >
+  </a>
 {{ end }}
 
 

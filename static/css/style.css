@@ -132,6 +132,18 @@ picture {
 	margin-right: auto;
 }
 
+/* Clickable images */
+a img,
+a picture {
+	cursor: pointer;
+	transition: opacity 0.2s ease;
+}
+
+a:hover img,
+a:hover picture {
+	opacity: 0.85;
+}
+
 /* header and footer areas */
 .menu {
 	padding: 0;
