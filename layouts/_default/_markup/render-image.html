@@ -52,9 +52,12 @@
     {{ $desk1x := $img.Fit (printf "%dx%d webp q90" $innerW $innerH) }}
     {{ $desk2x := $img.Fit (printf "%dx%d webp q85" (mul $innerW 2) (mul $innerH 2)) }}
 
+    {{/* Full-size WebP for link */}}
+    {{ $fullWebp := $img.Resize (printf "%dx webp q90" $img.Width) }}
+
     {{ $bpMinus := sub $breakpoint 1 }}
 
-    <a href="{{ $img.RelPermalink }}">
+    <a href="{{ $fullWebp.RelPermalink }}">
       <picture{{ with $class }} class="{{ . }}"{{ end }}>
         <source media="(max-width: {{ $bpMinus }}px)"
                 srcset="{{ $mobile1x.RelPermalink }} 1x, {{ $mobile2x.RelPermalink }} 2x">
@@ -72,7 +75,7 @@
   {{ else }}
     {{/* Not tall (or forced off): plain responsive <img> with WebP conversion */}}
     {{ $webp := $img.Resize (printf "%dx webp q90" $img.Width) }}
-    <a href="{{ $img.RelPermalink }}">
+    <a href="{{ $webp.RelPermalink }}">
       <img
         src="{{ $webp.RelPermalink }}"
         alt="{{ $alt }}"
