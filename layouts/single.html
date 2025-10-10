@@ -2,7 +2,7 @@
 <div class="article-meta">
 <h1><span class="title">{{ .Title | markdownify }}</span></h1>
 {{ with .Params.author }}<h2 class="author">{{ . }}</h2>{{ end }}
-{{ if (gt .Params.date 0) }}<h2 class="date">{{ .Date.Format "Jan 2 2006" }}</h2>{{ end }}
+  {{ if (gt .Params.date 0) }}<strong>{{ .Date.Format "Jan 2 2006" }}</strong/>{{ end }}
 <p class="terms">
   {{ range $i := (slice "categories" "tags") }}
   {{ with ($.Param $i) }}
