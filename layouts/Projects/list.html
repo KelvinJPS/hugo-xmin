@@ -1,0 +1,17 @@
+<!-- Create Cards for my projects -->
+
+{{ partial "header.html" . }}
+
+<h1 style="text-align:center">My Projects</h1>
+
+<div id="projects-card">
+  {{ $projects:= .Pages }}
+  {{ range (where $projects "Section" "projects") }}
+  <h2 style="margin: 0q;"> <a href="{{ .RelPermalink }}">{{ .Title | markdownify }}</a></h3>
+    <p>{{ .Description | markdownify}}</p>
+    <h4 style="margin: 0q;">notes</h4>
+    <p>{{ .Params.Notes | markdownify}}</p>
+    {{ end }}
+</div>
+
+{{ partial "footer.html" . }}

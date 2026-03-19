@@ -305,3 +305,10 @@ tr:nth-child(even) {
 		padding: 0.5rem 1.5rem;
 	}
 }
+
+#projects-card {
+	padding: 1em;
+	border: dotted;
+	border-color: var(--accent-color);
+
+}
