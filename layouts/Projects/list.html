@@ -7,10 +7,14 @@
 <div id="projects-card">
   {{ $projects:= .Pages }}
   {{ range (where $projects "Section" "projects") }}
-  <h2 style="margin: 0q;"> <a href="{{ .RelPermalink }}">{{ .Title | markdownify }}</a></h3>
+  <h2><a href="{{.Params.Project_url}}">{{ .Title | markdownify }}</a></h3>
     <p>{{ .Description | markdownify}}</p>
-    <h4 style="margin: 0q;">notes</h4>
-    <p>{{ .Params.Notes | markdownify}}</p>
+    <p><strong>notes:</strong>
+      {{ .Params.Notes | markdownify}}</p>
+    <p><strong>stack:</strong>
+      {{ .Params.stack | markdownify}}</p>
+
+
     {{ end }}
 </div>
 
