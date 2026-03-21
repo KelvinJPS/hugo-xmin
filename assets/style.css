@@ -310,6 +310,7 @@ tr:nth-child(even) {
 	padding: 1em;
 	border: dotted;
 	border-color: var(--accent-color);
+	margin: 1em;
 
 	h1,
 	h2,

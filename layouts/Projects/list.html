@@ -4,18 +4,16 @@
 
 <h1 style="text-align:center">My Projects</h1>
 
+{{ $projects:= .Pages }}
+{{ range (where $projects "Section" "projects") }}
 <div id="projects-card">
-  {{ $projects:= .Pages }}
-  {{ range (where $projects "Section" "projects") }}
-  <h2><a href="{{.Params.Project_url}}">{{ .Title | markdownify }}</a></h3>
-    <p>{{ .Description | markdownify}}</p>
-    <p><strong>notes:</strong>
-      {{ .Params.Notes | markdownify}}</p>
-    <p><strong>stack:</strong>
-      {{ .Params.stack | markdownify}}</p>
-
-
-    {{ end }}
+  <h2><a href="{{.Params.Project_url}}">{{ .Title | markdownify }}</a></h2>
+  <p>{{ .Description | markdownify}}</p>
+  <p><strong>notes:</strong>
+    {{ .Params.Notes | markdownify}}</p>
+  <p><strong>stack:</strong>
+    {{ .Params.stack | markdownify}}</p>
 </div>
+{{ end }}
 
 {{ partial "footer.html" . }}
