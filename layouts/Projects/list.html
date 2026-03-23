@@ -11,6 +11,9 @@
   <p>{{ .Description | markdownify}}</p>
   <p><strong>notes:</strong>
     {{ .Params.Notes | markdownify}}</p>
+  {{ if .Params.Repo }}
+  <a href="{{.Params.Repo}}">Source code</a>
+  {{ end }}
   <p><strong>stack:</strong>
     {{ .Params.stack | markdownify}}</p>
 </div>
