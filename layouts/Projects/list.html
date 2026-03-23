@@ -8,6 +8,9 @@
 {{ range (where $projects "Section" "projects") }}
 <div id="projects-card">
   <h2><a href="{{.Params.Project_url}}">{{ .Title | markdownify }}</a></h2>
+  {{ if .Params.Img }}
+  <img src="{{.Params.Img}}" />
+  {{ end }}
   <p>{{ .Description | markdownify}}</p>
   <p><strong>notes:</strong>
     {{ .Params.Notes | markdownify}}</p>
