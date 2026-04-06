@@ -9,13 +9,15 @@
 <ul style="list-style-type: none; padding: 0">
   {{ $pages := .Pages }}
   {{ if .IsHome }}{{ $pages = .Site.RegularPages }}{{ end }}
-  {{ range (where $pages "Section" "!=" "") }}
-    {{ if and (not .Draft) .Title }}
+
+  {{ range (where $pages "Section" "==" "blog") }}
+  {{ if and (not .Draft) .Title }}
   <li>
     <a href="{{ .RelPermalink }}">{{ .Title | markdownify }}</a>
   </li>
-    {{ end }}
   {{ end }}
+  {{ end }}
+
 </ul>
 
 {{ partial "footer.html" . }}
